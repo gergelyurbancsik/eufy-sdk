@@ -448,7 +448,7 @@ export class EufyMega extends EventEmitter {
     });
     this.rtc = new RtcCommandRouter({
       identity: () => this.mega.rtcIdentity(),
-      shard: (route) => (route.mediaTrack ? this.mega.rtcShard : this.mega.portalShard()),
+      shard: () => this.mega.portalShard(),
       country: opts.countryCode,
       logger: opts.logger,
       ffmpegPath: opts.ffmpegPath,

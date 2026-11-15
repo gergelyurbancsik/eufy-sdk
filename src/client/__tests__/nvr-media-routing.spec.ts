@@ -59,7 +59,7 @@ function fixture(model: string, name: string) {
 
 afterEach(() => vi.restoreAllMocks());
 
-it("keeps a standalone T8223 live call on the PHONE shard on a split account", async () => {
+it("signs a standalone T8223 live call on the portal WEB shard on a split account", async () => {
   const shards: string[] = [];
   vi.spyOn(RtcSession.prototype, "connect").mockImplementation(async function (this: RtcSession) {
     shards.push((this as unknown as { opts: RtcSessionOptions }).opts.shard);
@@ -83,8 +83,7 @@ it("keeps a standalone T8223 live call on the PHONE shard on a split account", a
     const stream = await device.camera?.()?.live?.();
     expect(stream).toBeDefined();
     stream?.stop();
-    expect(shards).toEqual(["eu-pr"]);
-    expect(internals.mega.portalShard).not.toHaveBeenCalled();
+    expect(shards).toEqual(["ie-pr"]);
     expect(p2p).not.toHaveBeenCalled();
   } finally {
     internals.rtc.close();

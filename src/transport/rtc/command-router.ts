@@ -111,8 +111,8 @@ export interface RtcLiveRoute extends RtcRoute {
 export interface RtcCommandRouterDeps {
   /** The logged-in session's credentials; `undefined` while logged out. */
   identity: () => RtcIdentity | undefined;
-  /** The signing shard for the route (`"ie-pr"`, `"eu-pr"`, `"us-pr"`); picks the smart host. */
-  shard: (route: RtcRoute) => string | Promise<string>;
+  /** The account's signing shard (`"ie-pr"`, `"eu-pr"`); picks the smart host. The sign names no route. */
+  shard: () => string | Promise<string>;
   /** ISO country sent on the sign request (default `US`). */
   country?: string;
   logger?: Logger;
@@ -420,7 +420,7 @@ export class RtcCommandRouter {
       return source;
     };
     const resolveShard = async (): Promise<void> => {
-      this.callShards.set(key, await this.deps.shard(route));
+      this.callShards.set(key, await this.deps.shard());
     };
     return {
       live: async (opts) => {
@@ -717,7 +717,7 @@ export class RtcCommandRouter {
     const sn = route.stationSn;
     const reused = await this.reusable(sn);
     if (reused) return reused;
-    const shard = await this.deps.shard(route);
+    const shard = await this.deps.shard();
     if (this.sessions.has(sn)) {
       const again = await this.reusable(sn);
       if (again) return again;
